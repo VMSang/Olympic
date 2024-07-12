@@ -13,7 +13,6 @@ k₁k₂c² % c = 0 (vì k₁k₂c² = c * (k₁k₂c), luôn chia hết cho c)
 k₁r₂c % c = 0 (vì k₁r₂c = c * (k₁r₂), luôn chia hết cho c)
 k₂r₁c % c = 0 (vì k₂r₁c = c * (k₂r₁), luôn chia hết cho c)
 
-
 Áp dụng tính chất của phép chia lấy dư:
 (a*b) % c = (0 + 0 + 0 + r₁r₂) % c = r₁r₂ % c
 Thay r₁ và r₂:
@@ -35,36 +34,58 @@ gđ2: biểu diễn b dạng nhị phân:
 
 #include <bits/stdc++.h>
 using namespace std;
-using ll = long long;
+using long long = long long;
 
-ll nhan_CongThucNguyenBan(ll a, ll b, ll c) {
-    return (a * b) % c = ((a % c) * (b % c)) % c;
+// nhược điểm [(𝑎 % 10^18)×(b % 10^18)] ≤ 10^36
+long long nhan_CongThucNguyenBan(long long a, long long b, long long c) {
+    return ((a % c) * (b % c)) % c;
 }
 
-ll nhan_Loop(ll a, ll b, ll c) {
-    ll res = 0;
-    a %= c; //đảm bảo không tràn khi a là chẵn (bit cuối == 0)
-    while (b > 0) { //mỗi lần bỏ đi 1 bit, khi b == 0 tương đương bit 0 thì dừng
-        if (b & 1) { //bit 1 thì tính
-            res = (res + a) % c;
+
+/* cải tiến của phép nhân ấn độ
+(a*b) = a*b/2 + a*b/2 (b chẵn)
+      = a*b/2 * a + a*b/2 * a (b lẻ)
+*/
+
+long long nhan_nhi_Phan(long long a, long long b, long long c) {
+    long long res = 0;
+    a %= c; //đảm bảo rằng giá trị của a luôn nhỏ hơn c, tránh tràn số
+    while (b > 0) {
+        if (b & 1) {
+            res = (res + a) % c; //phần dư a khi b lẻ
         }
-        a*=2;
+        //a nhân 2 thì b chia đảm bảo khi triệt tiêu nhau là đúng
+        //chỉ chia dư ở a vì chỉ có a tăng lên, b giảm mãi
+        a *= 2 % c;
         b /= 2; // bỏ bit cuối
     }
+    return res;
 }
 
+//có thể tràn ở chỗ a*2 với lần gọi đầu tiên với a rất lớn nhân 2
 long long nhan_dequy(long long a, long long b, long long c) {
-    if (b <= 0)
+    if (b == 0)
         return 0;
     long long res = 0;
-    if (b % 2 == 1)
+    if (b % 2 == 0)
         res = a % c;
     return (res + nhan_dequy((a * 2) % c, b / 2, c)) % c;
 }
 
+//khắc phục chỉ cần giảm b và nhân 2 vào a khi cần
+long long multiply_modulo(long long a, long long b, long long M) {
+    if (b == 0)
+        return 0;
+    long long t = multiply_modulo(a, b / 2, M) % M;
+    if (b & 1)
+        return ((t + t) % M + a % M) % M;
+    else
+        return (t + t) % M;
+}
+
 int main() {
     ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
+    cin.tie(NUlong long);
 
     long long a, b, c;
     cin >> a >> b >> c;
