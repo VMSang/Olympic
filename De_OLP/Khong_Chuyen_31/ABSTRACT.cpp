@@ -1,8 +1,10 @@
+//đọc kĩ đề bài, vì cột có thể bằng 0, nên không khởi tạo INT_MIN được
+//vì nó sẽ đếm luôn cái 0 này 
 #include <bits/stdc++.h>
 using namespace std;
 
 int h[1005][1005];
-int nhinThay[1005][1005] = {false};
+bool nhinThay[1005][1005] = {false};
 
 int main() {
 	ios_base::sync_with_stdio(false);
@@ -20,7 +22,9 @@ int main() {
 	//xu ly
 	//trai sang phai
 	for (int i = 0; i < n; i++) {
-		int maxH = INT_MIN;
+		if (h[i][0] > 0)
+			nhinThay[i][0] = true;
+		int maxH = 0;
 		for (int j = 0; j < m; j++) {
 			if (h[i][j] > maxH) {
 				maxH = h[i][j];
@@ -30,7 +34,9 @@ int main() {
 	}
 	//phai sang trai
 	for (int i = 0; i < n; i++) {
-		int maxH = INT_MIN;
+		if (h[i][m - 1] > 0)
+			nhinThay[i][m - 1] = true;
+		int maxH = 0;
 		for (int j = m - 1; j >= 0; j--) {
 			if (h[i][j] > maxH) {
 				maxH = h[i][j];
@@ -39,35 +45,39 @@ int main() {
 		}
 	}
 	//sau ra truoc
-	for(int i=0; i<m; i++){
-		int maxH = INT_MIN;
-		for(int j=0; j<n; j++){
-			if(h[j][i] > maxH){
-				maxH = h[j][i];
-				nhinThay[j][i] = true;
+	for (int j = 0; j < m; j++) {
+		if (h[0][j] > 0)
+			nhinThay[0][j] = true;
+		int maxH = 0;
+		for (int i = 0; i < n; i++) {
+			if (h[i][j] > maxH) {
+				maxH = h[i][j];
+				nhinThay[i][j] = true;
 			}
 		}
 	}
 	//truoc ra sau
-	for(int i=0; i<m; i++){
-		int maxH = INT_MIN;
-		for(int j=n-1; j>=0; j--){
-			if(h[j][i] > maxH){
-				maxH = h[j][i];
-				nhinThay[j][i] = true;
+	for (int j = 0; j < m; j++) {
+		if (h[n - 1][j] > 0)
+			nhinThay[n - 1][j] = true;
+		int maxH = 0;
+		for (int i = n - 1; i >= 0; i--) {
+			if (h[i][j] > maxH) {
+				maxH = h[i][j];
+				nhinThay[i][j] = true;
 			}
 		}
 	}
 
 	//tong cot nhin thay
 	int cnt = 0;
-	for(int i=0; i<n; i++){
-		for(int j=0; j<m; j++){
-			if(nhinThay[i][j] == true){
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			if (nhinThay[i][j] == true) {
 				cnt++;
 			}
 		}
 	}
-	cout<<cnt;
+	cout << cnt;
 	return 0;
 }
