@@ -30,8 +30,15 @@ void Union_set(int x, int y) {
 int main() {
 	cin >> n >> q;
 
-	set<int> se;
-	
+	set<int> se[MAX_N];
+	int pos[MAX_N];
+
+	for(int i=1; i<=n; i++){
+		se[i].insert(i);
+		pos[i] = i;
+	}
+
+
 	while (q--) {
 		int type, u, v;
 		cin >> type;
@@ -39,11 +46,13 @@ int main() {
 		if (type == 1) {
 			cin >> u >> v;
 			Union_set(u, v);
+
 		} else if (type == 2) {
 			cin >> u;
 			cout << sz[find(u)] << endl;
 		} else if (type == 3) {
 			cin >> u;
+
 		}
 	}
 	
