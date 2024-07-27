@@ -1,19 +1,19 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Hàm kiểm tra xem có thể chia các cặp vợ chồng thành số nhóm nhất định không
-bool canDivideIntoGroups(vector<pair<int, int>>& couples, int groups) {
-    vector<int> maxWifeHeight(groups, 0);  // Chiều cao tối đa của vợ trong mỗi nhóm
-    for (const auto& couple : couples) {
-        bool placed = false;
-        for (int i = 0; i < groups; ++i) {
-            if (maxWifeHeight[i] <= couple.second) {  // Nếu có thể xếp vào nhóm này
-                maxWifeHeight[i] = couple.second;  // Cập nhật chiều cao tối đa của vợ trong nhóm
-                placed = true;
+bool check(pair<int, int> a[], int n, int mid) {
+    vector<int> group(mid, 0); // Chiều cao max ban đầu của các nhóm
+    
+    for (int i = 0; i < n; ++i) {
+        bool found = false;
+        for (int j = 0; j < mid; ++j) {
+            if (a[i].second >= group[j]) {
+                group[j] = a[i].second;
+                found = true;
                 break;
             }
         }
-        if (!placed) return false;  // Nếu không thể xếp cặp vợ chồng này vào bất kỳ nhóm nào
+        if (!found) return false;
     }
     return true;
 }
@@ -22,25 +22,25 @@ int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
     cout.tie(nullptr);
-
-    int n;
-    cin >> n;
-    vector<pair<int, int>> couples(n);
+    
+    int n; cin >> n;
+    pair<int, int> a[n];
     
     for (int i = 0; i < n; ++i) {
-        cin >> couples[i].first >> couples[i].second;
+        cin >> a[i].first >> a[i].second;
     }
-
-    sort(couples.begin(), couples.end());
-
-    int left = 1, right = n;
-    while (left < right) {
-        int mid = (left + right) / 2;
-        if (canDivideIntoGroups(couples, mid)) {
-            right = mid;  // Có thể chia thành mid nhóm, thử với số nhóm ít hơn
+    
+    sort(a, a + n); // Sắp xếp theo chiều cao của chồng
+    
+    int l = 1, r = n;
+    while (l < r) {
+        int mid = (l + r) / 2;
+        if (check(a, n, mid)) {
+            r = mid; // Giảm số nhóm
         } else {
-            left = mid + 1;  // Không thể chia thành mid nhóm, cần nhiều nhóm hơn
+            l = mid + 1; // Tăng số nhóm
         }
     }
-
-    cout << left << endl;  // Số
+    cout << l;
+    return 0;
+}
