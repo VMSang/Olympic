@@ -1,14 +1,38 @@
 #include <iostream>
-#include <format>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+bool isBeautifulNumber(const string& s) {
+    int num = stoi(s);
+    return num % 2 == 0;
+}
+
+int countBeautifulNumbers(const string& s, int l, int r) {
+    int count = 0;
+    for (int i = l; i <= r; ++i) {
+        for (int j = i; j <= r; ++j) {
+            string numStr = s.substr(i, j - i + 1);
+            if (isBeautifulNumber(numStr)) {
+                ++count;
+            }
+        }
+    }
+    return count;
+}
 
 int main() {
-    int a = 10;
-    double b = 3.14;
-    std::string s = "world";
+    string s;
+    cin >> s;
+    int q;
+    cin >> q;
 
-    // Use std::format for string formatting
-    std::string result = std::format("Hello, {}! The value of a is {} and b is {:.2f}.", s, a, b);
-    
-    std::cout << result << "\n";
+    for (int i = 0; i < q; ++i) {
+        int li, ri;
+        cin >> li >> ri;
+        cout << countBeautifulNumbers(s, li, ri) << " ";
+    }
+
     return 0;
 }
