@@ -1,33 +1,44 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <list>
+
 using namespace std;
 
-
-
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    cout.tie(nullptr);
-
-    int n; cin >> n;
-
-    vector<int> v(n);
-    for (int i = 0; i < n; ++i) {
-        v[i] = i + 1;
+    int n;
+    cin >> n;
+    
+    // Tạo danh sách liên kết chứa các đứa trẻ từ 1 đến n
+    list<int> children;
+    for (int i = 1; i <= n; ++i) {
+        children.push_back(i);
     }
-
-    vector<int> result;
-    int index = 0;
-
-    while (!v.empty()) {
-        index = (index + 1) % v.size();
-        result.push_back(v[index]);
-        v.erase(v.begin() + index);
+    
+    auto it = children.begin(); // Con trỏ bắt đầu từ đầu danh sách
+    list<int> result; // Danh sách lưu thứ tự nhận kẹo
+    
+    while (!children.empty()) {
+        // Đếm tới số 2 và loại bỏ đứa trẻ nhận kẹo
+        for (int count = 1; count <= 2; ++count) {
+            if (count == 2) {
+                result.push_back(*it); // Thêm đứa trẻ nhận kẹo vào danh sách kết quả
+                it = children.erase(it); // Xóa đứa trẻ khỏi danh sách
+                if (it == children.end()) { // Nếu kết thúc danh sách, quay lại đầu
+                    it = children.begin();
+                }
+                break; // Đã loại bỏ, không cần đếm thêm
+            }
+            ++it;
+            if (it == children.end()) { // Nếu kết thúc danh sách, quay lại đầu
+                it = children.begin();
+            }
+        }
     }
-
-    for (int i = 0; i < result.size(); ++i) {
-        if (i > 0) cout << " ";
-        cout << result[i];
+    
+    // In kết quả
+    for (int number : result) {
+        cout << number << " ";
     }
+    cout << endl;
 
     return 0;
 }
